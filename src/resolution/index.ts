@@ -5,6 +5,7 @@
  */
 
 import * as fs from 'fs';
+import { resolveCommonLispReference } from './commonlisp';
 import * as path from 'path';
 import { Language, Node, UnresolvedReference, Edge } from '../types';
 import { QueryBuilder } from '../db/queries';
@@ -1482,6 +1483,7 @@ export class ReferenceResolver {
   }
 
   private resolveOneInner(ref: UnresolvedRef): ResolvedRef | null {
+    if (ref.language === 'commonlisp') return resolveCommonLispReference(ref, this.context);
     // A local C++ object construction (`T obj(args)`, ref `ns::T::T/1`)
     // resolves ONLY to a constructor of the lexically nearest `T` (#1839).
     if (isCppConstructorRef(ref)) return matchCppConstructor(ref, this.context);
